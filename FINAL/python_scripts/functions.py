@@ -303,3 +303,62 @@ def rolling_return_stats(rolling_returns, benchmark_col):
         }
 
     return pd.DataFrame(stats).T
+
+
+def audit_normalization(df: pd.DataFrame, verbose: bool = True) -> list:
+    """
+    Scan a DataFrame for columns that appear to use full-sample normalization.
+    From chapter 10
+
+    Checks for:
+    - Any column whose values match (x - x.mean()) / x.std() pattern
+    - Any column whose mean is approximately 0 and std is approximately 1
+      (signature of full-sample standardization)
+    - Any column whose values match a full-sample percentile rank
+
+    Parameters:
+    -----------
+    df      : DataFrame to audit
+    verbose : print findings if True
+
+    Returns:
+    --------
+    List of column names flagged as potentially using full-sample normalization.
+    """
+    flagged = []
+
+    for col in df.select_dtypes(include=[np.number]).columns:
+        series = df[col].dropna()
+
+        if len(series) < 30:
+            # Too short to assess meaningfully
+            continue
+
+        col_mean = series.mean()
+        col_std  = series.std()
+
+        # Flag 1: mean near 0 and std near 1
+        # This is the signature of full-sample z-score normalization.
+        # An expanding z-score will NOT have mean=0, std=1 across the full series.
+        if abs(col_mean) < 0.05 and abs(col_std - 1.0) < 0.05:
+            flagged.append(col)
+            if verbose:
+                print(f"[FLAG] '{col}': mean={col_mean:.4f}, std={col_std:.4f}")
+                print(f"       Signature of full-sample z-score normalization.")
+                print(f"       Check whether an expanding or rolling window should be used.\n")
+
+        # Flag 2: values fall exactly in [0, 1] with mean near 0.5
+        # Signature of a full-sample percentile rank (.rank(pct=True))
+        elif series.min() >= 0 and series.max() <= 1 and abs(col_mean - 0.5) < 0.05:
+            flagged.append(col)
+            if verbose:
+                print(f"[FLAG] '{col}': values in [0,1], mean={col_mean:.4f}")
+                print(f"       Possible full-sample percentile rank.")
+                print(f"       Check whether .expanding().rank(pct=True) should be used.\n")
+
+    if not flagged:
+        print("No full-sample normalization patterns detected.")
+    else:
+        print(f"{len(flagged)} column(s) flagged for review: {flagged}")
+
+    return flagged
