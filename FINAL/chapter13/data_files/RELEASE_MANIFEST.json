@@ -1,0 +1,250 @@
+{
+  "book": "B37124 Financial Trading with Python, 2nd Edition",
+  "chapter": 13,
+  "generated_utc": "2026-08-23T18:47:40.635164+00:00",
+  "backtest_margin_days": 30,
+  "files": [
+    {
+      "file": "ch13_nb01_backtest_prices.parquet",
+      "nb": "01",
+      "kind": "backtest",
+      "rows": 4902,
+      "cols": 50,
+      "start": "2007-01-03",
+      "end": "2026-06-29",
+      "mb": 1.56,
+      "sha256": "48a1e7ecb481df687afc64b20934122288e38429d165f51641bb7cd058295d10"
+    },
+    {
+      "file": "ch13_nb01_benchmark_prices.parquet",
+      "nb": "01",
+      "kind": "benchmark",
+      "rows": 4902,
+      "cols": 1,
+      "start": "2007-01-03",
+      "end": "2026-06-29",
+      "mb": 0.08,
+      "sha256": "d8dea776c27283b59cf9aee021a39ce31ccdcedd2e35c61e49c716e916d670ce"
+    },
+    {
+      "file": "ch13_nb01_signal_prices.parquet",
+      "nb": "01",
+      "kind": "signal",
+      "rows": 4882,
+      "cols": 250,
+      "start": "2007-01-03",
+      "end": "2026-05-29",
+      "mb": 9.04,
+      "sha256": "70a32d93c5bdff68198b38e573dcac42250c9ff2e84fcc36865885d21e26afe8"
+    },
+    {
+      "file": "ch13_nb02_backtest_prices.parquet",
+      "nb": "02",
+      "kind": "backtest",
+      "rows": 4902,
+      "cols": 50,
+      "start": "2007-01-03",
+      "end": "2026-06-29",
+      "mb": 1.56,
+      "sha256": "98c45b635dfadc280d42d95cdff2f24165693de815c9e0c42c8956b701e5ec1d"
+    },
+    {
+      "file": "ch13_nb02_benchmark_prices.parquet",
+      "nb": "02",
+      "kind": "benchmark",
+      "rows": 4902,
+      "cols": 1,
+      "start": "2007-01-03",
+      "end": "2026-06-29",
+      "mb": 0.08,
+      "sha256": "8580ca8ced58975476b7474155bb076d21b8d8bf0620ad363d2cbecf5af79484"
+    },
+    {
+      "file": "ch13_nb02_signal_prices.parquet",
+      "nb": "02",
+      "kind": "signal",
+      "rows": 4882,
+      "cols": 250,
+      "start": "2007-01-03",
+      "end": "2026-05-29",
+      "mb": 9.04,
+      "sha256": "c90c72b66e266c11f9ddaa908c8010bb89e174aa3e4d3120dd5890513ea70055"
+    },
+    {
+      "file": "ch13_nb03_backtest_prices.parquet",
+      "nb": "03",
+      "kind": "backtest",
+      "rows": 4902,
+      "cols": 18,
+      "start": "2007-01-03",
+      "end": "2026-06-29",
+      "mb": 0.64,
+      "sha256": "4a961a22965c25f191cff0496c1dc5c9990458163a83d8b4fff67e8d3e33fd59"
+    },
+    {
+      "file": "ch13_nb03_benchmark_prices.parquet",
+      "nb": "03",
+      "kind": "benchmark",
+      "rows": 4902,
+      "cols": 1,
+      "start": "2007-01-03",
+      "end": "2026-06-29",
+      "mb": 0.08,
+      "sha256": "8580ca8ced58975476b7474155bb076d21b8d8bf0620ad363d2cbecf5af79484"
+    },
+    {
+      "file": "ch13_nb03_signal_prices.parquet",
+      "nb": "03",
+      "kind": "signal",
+      "rows": 4882,
+      "cols": 90,
+      "start": "2007-01-03",
+      "end": "2026-05-29",
+      "mb": 3.63,
+      "sha256": "d3d1a8b414b9c0c2ea9f16b70c9d290f68f79d3907b09795b320c78be5167e9a"
+    },
+    {
+      "file": "ch13_nb04_backtest_prices.parquet",
+      "nb": "04",
+      "kind": "backtest",
+      "rows": 5806,
+      "cols": 4,
+      "start": "2003-06-02",
+      "end": "2026-06-29",
+      "mb": 0.21,
+      "sha256": "8351793514f5615778685c74ea181f9f0e29952d040908a7cdfba329dde4f637"
+    },
+    {
+      "file": "ch13_nb04_benchmark_prices.parquet",
+      "nb": "04",
+      "kind": "benchmark",
+      "rows": 5806,
+      "cols": 1,
+      "start": "2003-06-02",
+      "end": "2026-06-29",
+      "mb": 0.1,
+      "sha256": "03aca012ef85f1df50d1c3b9349c2893c796aa796ad280401141213321c8d7ea"
+    },
+    {
+      "file": "ch13_nb04_signal_prices.parquet",
+      "nb": "04",
+      "kind": "signal",
+      "rows": 5786,
+      "cols": 30,
+      "start": "2003-06-02",
+      "end": "2026-05-29",
+      "mb": 1.52,
+      "sha256": "fc94c7db1341e2bd8df19c74f1824f1fdc49d4155aff8194ddb474b26d840e29"
+    },
+    {
+      "file": "ch13_nb05_backtest_prices.parquet",
+      "nb": "05",
+      "kind": "backtest",
+      "rows": 6920,
+      "cols": 4,
+      "start": "1998-12-22",
+      "end": "2026-06-29",
+      "mb": 0.25,
+      "sha256": "0b19cfe9c4ecdc36a59c0ed1e6527ac3a92bbc0a3fa54266fce7c171b424431a"
+    },
+    {
+      "file": "ch13_nb05_benchmark_prices.parquet",
+      "nb": "05",
+      "kind": "benchmark",
+      "rows": 6935,
+      "cols": 1,
+      "start": "1998-12-01",
+      "end": "2026-06-29",
+      "mb": 0.11,
+      "sha256": "eeb27d6f3200af3362208bcf656cb9365ef1f7ee7761e36207c5c8a80dda8642"
+    },
+    {
+      "file": "ch13_nb05_ppi_series.parquet",
+      "nb": "05",
+      "kind": "ppi",
+      "rows": 330,
+      "cols": 2,
+      "start": "1998-12-01",
+      "end": "2026-05-01",
+      "mb": 0.01,
+      "sha256": "14bd43b72e6a46edcefa44721a321c389e6b0a88289759f487b1d492cf3a424f"
+    },
+    {
+      "file": "ch13_nb05_signal_prices.parquet",
+      "nb": "05",
+      "kind": "signal",
+      "rows": 6915,
+      "cols": 25,
+      "start": "1998-12-01",
+      "end": "2026-05-29",
+      "mb": 1.54,
+      "sha256": "fe82bc8178c5844379d692b70c88c25a0e886d117bf1b4074b1894241e18d412"
+    },
+    {
+      "file": "ch13_nb06_backtest_prices.parquet",
+      "nb": "06",
+      "kind": "backtest",
+      "rows": 5909,
+      "cols": 58,
+      "start": "2003-01-02",
+      "end": "2026-06-29",
+      "mb": 1.99,
+      "sha256": "e77b5197ac19625883c9563a01f38253607389491a412c373934cba0eebbdd1a"
+    },
+    {
+      "file": "ch13_nb06_benchmark_prices.parquet",
+      "nb": "06",
+      "kind": "benchmark",
+      "rows": 5909,
+      "cols": 1,
+      "start": "2003-01-02",
+      "end": "2026-06-29",
+      "mb": 0.1,
+      "sha256": "6c5e99653bd56d6aede6438f7408737bb6747b624798c1652b6deb37a0c07107"
+    },
+    {
+      "file": "ch13_nb06_signal_prices.parquet",
+      "nb": "06",
+      "kind": "signal",
+      "rows": 5889,
+      "cols": 290,
+      "start": "2003-01-02",
+      "end": "2026-05-29",
+      "mb": 11.67,
+      "sha256": "275a1569e86955af6c15bbbd049bc834418a8400b6fce377acbd50f3823bdeae"
+    },
+    {
+      "file": "ch13_nb07_backtest_prices.parquet",
+      "nb": "07",
+      "kind": "backtest",
+      "rows": 4304,
+      "cols": 1,
+      "start": "2014-09-17",
+      "end": "2026-06-29",
+      "mb": 0.07,
+      "sha256": "48471ae7a8187ca4b66d76d8a9b1c513ef839c86d80931d7437c32180cf9b2b8"
+    },
+    {
+      "file": "ch13_nb07_benchmark_prices.parquet",
+      "nb": "07",
+      "kind": "benchmark",
+      "rows": 4304,
+      "cols": 1,
+      "start": "2014-09-17",
+      "end": "2026-06-29",
+      "mb": 0.07,
+      "sha256": "730e4da40c3d14dd9ab969fb2d59a7cae899af7ca3bd501185907f2190c2d069"
+    },
+    {
+      "file": "ch13_nb07_signal_prices.parquet",
+      "nb": "07",
+      "kind": "signal",
+      "rows": 4274,
+      "cols": 5,
+      "start": "2014-09-17",
+      "end": "2026-05-30",
+      "mb": 0.21,
+      "sha256": "0bfc7367b41e3a24c4270cfd7d78916ef9a752cb25e55c0290ac21c02b888b56"
+    }
+  ]
+}

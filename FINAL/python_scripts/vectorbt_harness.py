@@ -32,6 +32,40 @@ Conventions (identical to Notebook 8.2 and the harness notebook):
   calculate_performance_metrics, with periods_per_year (default 12).
 
 Requires functions.py (the Chapter 7 toolkit) in the import path.
+
+--------------------------------------------------------------------------- #
+Version 2: running against frozen price data
+--------------------------------------------------------------------------- #
+yfinance recomputes its entire adjusted-close history whenever a new dividend
+or split is recorded, so the same download run a month apart returns a slightly
+different series and every printed figure moves with it. Version 2 lets a
+notebook supply price data it has already saved, so the numbers in the book are
+reproducible by a reader.
+
+Three things changed. Nothing else did, and every default is unchanged, so an
+existing notebook that calls run_backtest('weights.csv') behaves exactly as it
+did before.
+
+1. run_backtest gains prices= and bench_prices=. Pass a DataFrame and a Series
+   respectively to run against saved data instead of downloading.
+
+2. The benchmark download moved out of trim_to_window into its own function,
+   download_benchmark. It used to be buried mid-function, which meant freezing
+   the strategy prices alone still left the benchmark live. That mattered more
+   than it looks: the benchmark's first available day helps set the start of
+   the whole backtest window, not just the benchmark column of the metrics.
+
+3. download_backtest_prices is exposed for the download notebook. It reuses the
+   same code path run_backtest uses, so the saved file matches what the live
+   run would have produced by construction rather than by careful copying.
+
+A saved price frame is treated as a superset, not as an exact match. Whatever
+range it covers, run_backtest slices it to the same window the live download
+would have requested, computed from the weights it was actually given. Saving a
+frame with a generous margin therefore stays correct even if a later change
+shifts the first or last trade date by a row. Without that slicing the frame
+would silently define the window itself, and a one-row shift would quietly
+backtest a different period instead of raising an error.
 """
 
 import pandas as pd
@@ -69,6 +103,36 @@ def load_weights(weights_csv):
     return weights
 
 
+def window_bounds(weights, pad_days=7):
+    """
+    Compute the price download window implied by a weights file.
+
+    Both the live path and the frozen path use this one definition, so there is
+    no way for the two to drift apart. The end date is padded a week past the
+    last trade so the final position has prices to drift against.
+
+    The bounds follow yfinance's convention: start is inclusive, end is
+    exclusive.
+
+    Parameters
+    ----------
+    weights : pandas.DataFrame
+        The loaded weights.
+    pad_days : int, optional
+        Calendar days added past the last trade date (default 7).
+
+    Returns
+    -------
+    px_start : pandas.Timestamp
+        First date to request, inclusive.
+    px_end : pandas.Timestamp
+        Last date to request, exclusive.
+    """
+    px_start = weights.index.min()
+    px_end = weights.index.max() + pd.Timedelta(days=pad_days)
+    return px_start, px_end
+
+
 def download_prices(tickers, start, end):
     """
     Download dividend-adjusted daily closing prices for a list of tickers.
@@ -98,6 +162,148 @@ def download_prices(tickers, start, end):
     if isinstance(prices, pd.Series):   # single-ticker guard
         prices = prices.to_frame(name=list(tickers)[0])
     return prices
+
+
+def download_benchmark(benchmark, start, end):
+    """
+    Download the adjusted daily closes for the buy-and-hold benchmark.
+
+    In version 1 this lived inside trim_to_window. It is a separate function
+    now for two reasons: the download notebook needs to call it to save a
+    benchmark file, and trim_to_window needs to be able to skip it when a saved
+    series is supplied.
+
+    Parameters
+    ----------
+    benchmark : str
+        Benchmark ticker.
+    start : str or pandas.Timestamp
+        First date to request.
+    end : str or pandas.Timestamp
+        Last date to request (exclusive, per yfinance).
+
+    Returns
+    -------
+    pandas.Series
+        Adjusted daily closes for the benchmark, indexed by trading day.
+    """
+    bench_raw = yf.download(benchmark, start=start, end=end, auto_adjust=True)
+    bench_px = bench_raw['Close']
+    if isinstance(bench_px, pd.DataFrame):   # MultiIndex column guard
+        bench_px = bench_px.iloc[:, 0]
+    bench_px.name = benchmark
+    return bench_px
+
+
+def download_backtest_prices(weights_csv, margin_days=30, pad_days=7):
+    """
+    Download exactly the prices run_backtest would use, plus a safety margin.
+
+    This is the function the download notebook calls to produce the frozen
+    backtest price file. It reuses load_weights, window_bounds, download_prices,
+    and align_price_columns, which is the same sequence run_backtest runs, so
+    the saved frame matches the live path by construction. Reproducing that
+    sequence by hand in a notebook would risk a mismatch in ticker derivation,
+    date padding, or column order, and a column-order mismatch pairs every
+    weight with the wrong asset's price without raising anything.
+
+    The margin widens the saved window on both ends. run_backtest slices the
+    saved frame back down to the exact window it needs, so the margin costs
+    nothing and protects against a later change moving the first or last trade
+    date by a row or two.
+
+    Parameters
+    ----------
+    weights_csv : str
+        Path to the sparse weights CSV for this strategy.
+    margin_days : int, optional
+        Extra calendar days saved on each end beyond the required window
+        (default 30).
+    pad_days : int, optional
+        Padding past the last trade date, matching run_backtest (default 7).
+
+    Returns
+    -------
+    pandas.DataFrame
+        Adjusted daily closes, columns in weights order, covering the required
+        window plus the margin. Save this with to_parquet.
+    """
+    weights = load_weights(weights_csv)
+    px_start, px_end = window_bounds(weights, pad_days=pad_days)
+    margin = pd.Timedelta(days=margin_days)
+    prices = download_prices(weights.columns, px_start - margin, px_end + margin)
+    prices = align_price_columns(prices, weights)
+    return prices
+
+
+def slice_to_window(prices, px_start, px_end, required_last=None, verbose=True):
+    """
+    Cut a saved price frame down to the window the live download would return.
+
+    yfinance treats start as inclusive and end as exclusive, so the same
+    half-open rule is applied here. A saved frame that covers more than the
+    required window is trimmed; one that covers less is an error, because the
+    alternative is a backtest that silently runs over a different period than
+    the one the weights describe.
+
+    Parameters
+    ----------
+    prices : pandas.DataFrame
+        The saved price frame.
+    px_start : pandas.Timestamp
+        First date required, inclusive.
+    px_end : pandas.Timestamp
+        Last date required, exclusive.
+    required_last : pandas.Timestamp, optional
+        The last trade date. The saved frame must reach at least this far. The
+        frame is allowed to stop short of px_end, since px_end is padding and
+        real price history simply ends where it ends.
+    verbose : bool, optional
+        If True (default), print the saved range and the window taken from it.
+
+    Returns
+    -------
+    pandas.DataFrame
+        The saved frame restricted to [px_start, px_end).
+
+    Raises
+    ------
+    ValueError
+        If the columns are a MultiIndex (the signal file was passed instead of
+        the backtest file), or if the saved frame does not cover the window.
+    """
+    if isinstance(prices.columns, pd.MultiIndex):
+        raise ValueError(
+            'Saved prices have MultiIndex columns. This looks like the raw '
+            'OHLCV signal file. Pass the backtest price file, which holds '
+            'adjusted closes only, one column per ticker.'
+        )
+
+    saved_first, saved_last = prices.index.min(), prices.index.max()
+
+    if saved_first > px_start:
+        raise ValueError(
+            f'Saved prices start {saved_first.date()}, after the required '
+            f'window start {px_start.date()}. The saved file does not cover '
+            f'this weights file.'
+        )
+    if required_last is not None and saved_last < required_last:
+        raise ValueError(
+            f'Saved prices end {saved_last.date()}, before the last trade '
+            f'date {required_last.date()}. The saved file does not cover this '
+            f'weights file.'
+        )
+
+    # Half-open on the right, matching yfinance's exclusive end date.
+    window = prices.loc[(prices.index >= px_start) & (prices.index < px_end)]
+
+    if verbose:
+        print('Using saved prices (no download).')
+        print(f'  Saved file covers:  {saved_first.date()} to {saved_last.date()}')
+        print(f'  Window taken:       {window.index.min().date()} to '
+              f'{window.index.max().date()}  ({len(window)} rows)')
+
+    return window
 
 
 def align_price_columns(prices, weights):
@@ -171,7 +377,8 @@ def place_on_calendar(weights, price_index):
     return weights_sparse
 
 
-def trim_to_window(prices, weights_sparse, benchmark, verbose=True):
+def trim_to_window(prices, weights_sparse, benchmark, verbose=True,
+                   bench_prices=None):
     """
     Trim prices, weights, and benchmark to a common backtest window.
 
@@ -194,6 +401,10 @@ def trim_to_window(prices, weights_sparse, benchmark, verbose=True):
         Benchmark ticker to download and compare against.
     verbose : bool, optional
         If True (default), print the truncation warning and window summary.
+    bench_prices : pandas.Series, optional
+        Saved benchmark closes. If supplied, no download happens and the series
+        is cut to the same span the download would have requested. A series
+        starting earlier or ending later than that span is fine; it is trimmed.
 
     Returns
     -------
@@ -209,7 +420,8 @@ def trim_to_window(prices, weights_sparse, benchmark, verbose=True):
     Raises
     ------
     ValueError
-        If the weights contain no nonzero rows (nothing to backtest).
+        If the weights contain no nonzero rows (nothing to backtest), or if a
+        supplied benchmark series does not reach the strategy's first trade.
     """
     # First trade date: the first row that carries a nonzero target weight.
     trade_rows = weights_sparse.dropna(how='all')
@@ -218,13 +430,27 @@ def trim_to_window(prices, weights_sparse, benchmark, verbose=True):
         raise ValueError('No nonzero weights found: nothing to backtest.')
     first_trade = nonzero.index.min()
 
+    # Benchmark prices: downloaded, or taken from the saved series and cut to
+    # the same span the download would have covered. Cutting rather than using
+    # the series as-is keeps the two paths identical, including the case where
+    # the benchmark genuinely starts after the strategy's first trade.
+    bench_last = prices.index.max()
+    if bench_prices is None:
+        bench_px = download_benchmark(
+            benchmark, start=first_trade,
+            end=bench_last + pd.Timedelta(days=1),
+        )
+    else:
+        bench_px = bench_prices.loc[first_trade:bench_last]
+        if bench_px.dropna().empty:
+            raise ValueError(
+                f'Saved benchmark series has no data between '
+                f'{first_trade.date()} and {bench_last.date()}.'
+            )
+        if verbose:
+            print(f'Using saved benchmark prices for {benchmark} (no download).')
+
     # Benchmark first available day.
-    bench_raw = yf.download(benchmark, start=first_trade,
-                            end=prices.index.max() + pd.Timedelta(days=1),
-                            auto_adjust=True)
-    bench_px = bench_raw['Close']
-    if isinstance(bench_px, pd.DataFrame):
-        bench_px = bench_px.iloc[:, 0]
     bench_first = bench_px.dropna().index.min()
 
     # Start on the later of the first trade and the benchmark's first day.
@@ -460,17 +686,24 @@ class BacktestResult:
 # Top-level entry point
 # --------------------------------------------------------------------------- #
 def run_backtest(weights_csv, benchmark='SPY', fees=0.0010, slippage=0.0005,
-                 init_cash=10_000, periods_per_year=12, verbose=True):
+                 init_cash=10_000, periods_per_year=12, verbose=True,
+                 prices=None, bench_prices=None):
     """
     Run a full backtest for a strategy weights file and score it.
 
     This is the single entry point a strategy notebook calls. It loads the
-    sparse weights file, downloads dividend-adjusted prices for its tickers,
+    sparse weights file, obtains dividend-adjusted prices for its tickers,
     aligns the price columns to the weights, places the weights on the trading
     calendar, trims to the common window (truncating to the benchmark start if
     the benchmark is younger), runs an uncosted and a costed VectorBT portfolio
     with whole-share trades, and scores both plus the benchmark on monthly
     returns.
+
+    Prices come from a live yfinance download unless saved data is supplied.
+    Both the strategy prices and the benchmark have to be supplied to make a
+    run fully reproducible: the benchmark's first available day helps set the
+    start of the backtest window, so a live benchmark can move the window even
+    when the strategy prices are frozen.
 
     Parameters
     ----------
@@ -491,6 +724,15 @@ def run_backtest(weights_csv, benchmark='SPY', fees=0.0010, slippage=0.0005,
         Annualization factor for the monthly metrics (default 12).
     verbose : bool, optional
         If True (default), print progress and the metric table.
+    prices : pandas.DataFrame, optional
+        Saved adjusted closes for the strategy tickers, as produced by
+        download_backtest_prices. If None (default), prices are downloaded.
+        A frame covering more than the required window is trimmed to it; a
+        frame covering less raises.
+    bench_prices : pandas.Series, optional
+        Saved adjusted closes for the benchmark. If None (default), the
+        benchmark is downloaded. One saved series can serve every strategy in
+        the chapter as long as it spans the widest window.
 
     Returns
     -------
@@ -498,17 +740,25 @@ def run_backtest(weights_csv, benchmark='SPY', fees=0.0010, slippage=0.0005,
         The scored metrics, both portfolio objects, the benchmark returns, and
         the backtest window, with a plot() method for the equity curve.
     """
-    # 1. Load weights and prices, align columns.
+    # 1. Load weights, obtain prices, align columns. The window is computed
+    #    from the weights either way, so a saved frame is cut to the same span
+    #    the download would have returned rather than defining the span itself.
     weights = load_weights(weights_csv)
-    px_start = weights.index.min()
-    px_end = weights.index.max() + pd.Timedelta(days=7)
-    prices = download_prices(weights.columns, px_start, px_end)
+    px_start, px_end = window_bounds(weights)
+    if prices is None:
+        prices = download_prices(weights.columns, px_start, px_end)
+    else:
+        prices = slice_to_window(
+            prices, px_start, px_end,
+            required_last=weights.index.max(), verbose=verbose,
+        )
     prices = align_price_columns(prices, weights)
 
     # 2. Place weights on the calendar and trim to the common window.
     weights_sparse = place_on_calendar(weights, prices.index)
     prices_t, weights_t, bench_t, start_day = trim_to_window(
-        prices, weights_sparse, benchmark, verbose=verbose
+        prices, weights_sparse, benchmark, verbose=verbose,
+        bench_prices=bench_prices,
     )
 
     # 3. Run the portfolio uncosted and costed.

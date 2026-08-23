@@ -1,0 +1,58 @@
+# Chapter 13 requirements
+# Financial Trading with Python, 2nd Edition (B37124)
+#
+# Install with:
+#     pip install -r requirements-ch13.txt
+#
+# The notebooks fetch this file from the repository rather than carrying pinned
+# versions in their own install cells. A version that stops resolving can then
+# be fixed in one commit instead of seven notebooks.
+#
+# -----------------------------------------------------------------------------
+# Tested configuration
+# -----------------------------------------------------------------------------
+# Every figure printed in Chapter 13 was produced under exactly these versions:
+#
+#     Python      3.13.15
+#     numpy       2.1.3
+#     pandas      2.2.3
+#     pyarrow     18.1.0
+#     vectorbt    0.28.5
+#     yfinance    0.2.66
+#     scikit-learn 1.6.1
+#
+# If your results differ, compare against this list first. The version report
+# cell in each notebook prints what you actually have.
+#
+# -----------------------------------------------------------------------------
+# Why some entries are exact and others are ranges
+# -----------------------------------------------------------------------------
+# vectorbt defines how the backtest behaves, so it is pinned exactly. A
+# different version can change results without raising anything.
+#
+# numpy and pandas are ranges. Both ship compiled wheels built per Python
+# version, and an exact pin on a compiled package eventually names a version
+# with no wheel for the reader's Python. pip then tries to build from source,
+# which on a hosted notebook looks like a hang followed by a crashed runtime
+# rather than a clear error. The ranges below are wide enough to survive a
+# Python bump and narrow enough that nobody lands on a materially different
+# library.
+#
+# The numpy ceiling exists because vectorbt requires numba, and numba caps the
+# numpy version it supports. numba is deliberately left unpinned so the
+# resolver can pick a build that matches your Python.
+
+vectorbt==0.28.5
+
+numpy>=2.1.0,<2.2
+pandas>=2.2.3,<2.3
+pyarrow>=15.0
+
+# Only needed when USE_SAVED_PRICES = False. Left in the base list because the
+# packages are small and a reader switching the flag should not have to hunt
+# for a second install step.
+yfinance>=0.2.60,<0.3
+fredapi>=0.5.0
+
+# Notebook 13.04 only (the regime classifier).
+scikit-learn>=1.6,<2.0
