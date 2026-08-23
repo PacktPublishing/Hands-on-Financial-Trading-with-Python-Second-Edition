@@ -1,7 +1,7 @@
 {
   "book": "B37124 Financial Trading with Python, 2nd Edition",
   "chapter": 13,
-  "generated_utc": "2026-08-23T18:47:40.635164+00:00",
+  "generated_utc": "2026-08-23T19:05:09.870961+00:00",
   "backtest_margin_days": 30,
   "files": [
     {
@@ -13,7 +13,7 @@
       "start": "2007-01-03",
       "end": "2026-06-29",
       "mb": 1.56,
-      "sha256": "48a1e7ecb481df687afc64b20934122288e38429d165f51641bb7cd058295d10"
+      "sha256": "e8907b4c6ddbb026df1f0ccafe61dc24d877e6306cabf191e8206b29b1280c25"
     },
     {
       "file": "ch13_nb01_benchmark_prices.parquet",
@@ -24,7 +24,7 @@
       "start": "2007-01-03",
       "end": "2026-06-29",
       "mb": 0.08,
-      "sha256": "d8dea776c27283b59cf9aee021a39ce31ccdcedd2e35c61e49c716e916d670ce"
+      "sha256": "7860f8d42a7f55b9eaa34c11b995bfb9452d8ef991f31e893bbda6cd974ab56a"
     },
     {
       "file": "ch13_nb01_signal_prices.parquet",
@@ -35,7 +35,7 @@
       "start": "2007-01-03",
       "end": "2026-05-29",
       "mb": 9.04,
-      "sha256": "70a32d93c5bdff68198b38e573dcac42250c9ff2e84fcc36865885d21e26afe8"
+      "sha256": "9699f14d23a328b1294a30974cbe52284a0ae5b420b9a7f44ff0c1e5e76767dd"
     },
     {
       "file": "ch13_nb02_backtest_prices.parquet",
@@ -46,7 +46,7 @@
       "start": "2007-01-03",
       "end": "2026-06-29",
       "mb": 1.56,
-      "sha256": "98c45b635dfadc280d42d95cdff2f24165693de815c9e0c42c8956b701e5ec1d"
+      "sha256": "e8907b4c6ddbb026df1f0ccafe61dc24d877e6306cabf191e8206b29b1280c25"
     },
     {
       "file": "ch13_nb02_benchmark_prices.parquet",
@@ -57,7 +57,7 @@
       "start": "2007-01-03",
       "end": "2026-06-29",
       "mb": 0.08,
-      "sha256": "8580ca8ced58975476b7474155bb076d21b8d8bf0620ad363d2cbecf5af79484"
+      "sha256": "7860f8d42a7f55b9eaa34c11b995bfb9452d8ef991f31e893bbda6cd974ab56a"
     },
     {
       "file": "ch13_nb02_signal_prices.parquet",
@@ -68,7 +68,7 @@
       "start": "2007-01-03",
       "end": "2026-05-29",
       "mb": 9.04,
-      "sha256": "c90c72b66e266c11f9ddaa908c8010bb89e174aa3e4d3120dd5890513ea70055"
+      "sha256": "9699f14d23a328b1294a30974cbe52284a0ae5b420b9a7f44ff0c1e5e76767dd"
     },
     {
       "file": "ch13_nb03_backtest_prices.parquet",
@@ -79,7 +79,7 @@
       "start": "2007-01-03",
       "end": "2026-06-29",
       "mb": 0.64,
-      "sha256": "4a961a22965c25f191cff0496c1dc5c9990458163a83d8b4fff67e8d3e33fd59"
+      "sha256": "8a5bbc9b785cc32c56cbe31ca7c66fd1db28ede5309f43173476d9d6a22cda3c"
     },
     {
       "file": "ch13_nb03_benchmark_prices.parquet",
@@ -90,7 +90,7 @@
       "start": "2007-01-03",
       "end": "2026-06-29",
       "mb": 0.08,
-      "sha256": "8580ca8ced58975476b7474155bb076d21b8d8bf0620ad363d2cbecf5af79484"
+      "sha256": "7860f8d42a7f55b9eaa34c11b995bfb9452d8ef991f31e893bbda6cd974ab56a"
     },
     {
       "file": "ch13_nb03_signal_prices.parquet",
@@ -101,7 +101,7 @@
       "start": "2007-01-03",
       "end": "2026-05-29",
       "mb": 3.63,
-      "sha256": "d3d1a8b414b9c0c2ea9f16b70c9d290f68f79d3907b09795b320c78be5167e9a"
+      "sha256": "e84dce41cbedd32f08a2a71e5dea4c9301634d7ba92a5cfc66ddbdf287b72396"
     },
     {
       "file": "ch13_nb04_backtest_prices.parquet",
@@ -112,7 +112,7 @@
       "start": "2003-06-02",
       "end": "2026-06-29",
       "mb": 0.21,
-      "sha256": "8351793514f5615778685c74ea181f9f0e29952d040908a7cdfba329dde4f637"
+      "sha256": "944b58d86b05cefac92ca4230c1e9aba4d4b82cf3d974adfb27fb04ed7d86a6c"
     },
     {
       "file": "ch13_nb04_benchmark_prices.parquet",
@@ -123,7 +123,7 @@
       "start": "2003-06-02",
       "end": "2026-06-29",
       "mb": 0.1,
-      "sha256": "03aca012ef85f1df50d1c3b9349c2893c796aa796ad280401141213321c8d7ea"
+      "sha256": "9cb82cf9e351f4ae7c9cfba5425c68db3e459897ca9bcfc158e69d4e7d60e1e2"
     },
     {
       "file": "ch13_nb04_signal_prices.parquet",
@@ -134,7 +134,7 @@
       "start": "2003-06-02",
       "end": "2026-05-29",
       "mb": 1.52,
-      "sha256": "fc94c7db1341e2bd8df19c74f1824f1fdc49d4155aff8194ddb474b26d840e29"
+      "sha256": "07e79aced5af5d000ac240d0f28ddf4da50bbc68cf1eff2975c674ad65d839c2"
     },
     {
       "file": "ch13_nb05_backtest_prices.parquet",
@@ -145,7 +145,7 @@
       "start": "1998-12-22",
       "end": "2026-06-29",
       "mb": 0.25,
-      "sha256": "0b19cfe9c4ecdc36a59c0ed1e6527ac3a92bbc0a3fa54266fce7c171b424431a"
+      "sha256": "24b44b1d0fa3d2aff6c745d681250bfc109e376e67048365c9d97f33aac599a3"
     },
     {
       "file": "ch13_nb05_benchmark_prices.parquet",
@@ -156,7 +156,7 @@
       "start": "1998-12-01",
       "end": "2026-06-29",
       "mb": 0.11,
-      "sha256": "eeb27d6f3200af3362208bcf656cb9365ef1f7ee7761e36207c5c8a80dda8642"
+      "sha256": "7a0213d69c29ce6f47207d2d5603a810d274e0051d86f4160ad280ae43e89199"
     },
     {
       "file": "ch13_nb05_ppi_series.parquet",
@@ -178,7 +178,7 @@
       "start": "1998-12-01",
       "end": "2026-05-29",
       "mb": 1.54,
-      "sha256": "fe82bc8178c5844379d692b70c88c25a0e886d117bf1b4074b1894241e18d412"
+      "sha256": "41ba42e36dc743b72b82a6de61691052d71461ff1ece96db614e7514b6dba18e"
     },
     {
       "file": "ch13_nb06_backtest_prices.parquet",
@@ -189,7 +189,7 @@
       "start": "2003-01-02",
       "end": "2026-06-29",
       "mb": 1.99,
-      "sha256": "e77b5197ac19625883c9563a01f38253607389491a412c373934cba0eebbdd1a"
+      "sha256": "f2721b27fa97a18cd4c80f638fa17312499a0bea1bbb7ddebe47a5aefa8c1535"
     },
     {
       "file": "ch13_nb06_benchmark_prices.parquet",
@@ -200,7 +200,7 @@
       "start": "2003-01-02",
       "end": "2026-06-29",
       "mb": 0.1,
-      "sha256": "6c5e99653bd56d6aede6438f7408737bb6747b624798c1652b6deb37a0c07107"
+      "sha256": "ec37eb853ef2015108568324ae4b4881382505c2c3ba14621af7eaddec75089f"
     },
     {
       "file": "ch13_nb06_signal_prices.parquet",
@@ -211,7 +211,7 @@
       "start": "2003-01-02",
       "end": "2026-05-29",
       "mb": 11.67,
-      "sha256": "275a1569e86955af6c15bbbd049bc834418a8400b6fce377acbd50f3823bdeae"
+      "sha256": "3eb9dbb076211786b5a0de07e9974442a372061ff2127c43c2ac6cee0d0e580a"
     },
     {
       "file": "ch13_nb07_backtest_prices.parquet",
