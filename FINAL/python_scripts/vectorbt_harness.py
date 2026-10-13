@@ -17,7 +17,8 @@ This module is the importable version of that same logic:
     print(result.metrics)
     result.plot()
 
-Conventions (identical to Notebook 8.2 and the harness notebook):
+Conventions (the same as Notebook 8.2 and the harness notebook, except that
+Notebook 8.2 keeps VectorBT's default of fractional shares):
 - Weights are dated to the signal day and fed to VectorBT unshifted; orders
   execute at that day's close.
 - The weights file is sparse: a row is a trade date, NaN between rows means
@@ -497,7 +498,8 @@ def run_portfolio(prices, weights, fees, slippage, init_cash):
     portfolio value per asset and NaN rows place no order; cash_sharing=True
     with group_by=True pools the assets into one portfolio so a sale funds a
     purchase; call_seq='auto' settles sells before buys on a trade date;
-    size_granularity=1 forces whole-share trades. Orders fill at the close of
+    size_granularity=1 forces whole-share trades, where Notebook 8.2 keeps
+    VectorBT's fractional default. Orders fill at the close of
     the dated row.
 
     Parameters
