@@ -32,7 +32,7 @@ from datetime import date
 
 from dotenv import load_dotenv
 
-from strategy.data import get_price_data, is_trading_day
+from strategy.data import get_price_data, is_trading_day, last_completed_session
 from strategy.logging_utils import already_ran_today, append_log_row
 from strategy.notify import send_telegram_message
 from strategy.signal import get_today_snapshot
@@ -81,7 +81,10 @@ def main():
               f"Skipping. Use --force to override.")
         sys.exit(0)
 
-    if not args.force and already_ran_today(LOG_PATH, today_str):
+    # The log is keyed by the date of the close the signal used, so check for
+    # the most recent completed session rather than the calendar date.
+    latest_close_str = last_completed_session().strftime('%Y-%m-%d')
+    if not args.force and already_ran_today(LOG_PATH, latest_close_str):
         print(f"[{today_str}] Already ran today. Skipping. Use --force to override.")
         sys.exit(0)
 

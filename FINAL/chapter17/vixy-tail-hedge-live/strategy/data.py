@@ -2,13 +2,18 @@
 strategy/data.py
 
 Pulls recent daily prices for the four VIXY tail hedge tickers from
-yfinance, and checks whether a given date is a valid NYSE trading day.
+yfinance, checks whether a given date is a valid NYSE trading day, and
+works out the most recent NYSE session that has closed.
 """
 import pandas as pd
 import pandas_market_calendars as mcal
 import yfinance as yf
 
 TICKERS = ['SPY', 'BIL', 'VIXY', '^VIX']
+
+# A session counts as closed this long after its scheduled close, which
+# gives Yahoo time to publish the final daily bar.
+SESSION_BUFFER = pd.Timedelta(minutes=15)
 
 
 def is_trading_day(check_date=None):
@@ -38,6 +43,33 @@ def is_trading_day(check_date=None):
     return not schedule.empty
 
 
+def last_completed_session(now=None):
+    """
+    Return the date of the most recent NYSE session that has closed.
+
+    Run after the close on a trading day and this is today. Run before the
+    close, on a weekend, or on a market holiday and it is the previous
+    trading day. Early-close days are handled by the NYSE calendar.
+
+    Parameters
+    ----------
+    now : Timestamp, optional
+        The moment to evaluate, timezone-aware. Defaults to now in UTC.
+
+    Returns
+    -------
+    date
+    """
+    if now is None:
+        now = pd.Timestamp.now(tz='UTC')
+
+    nyse = mcal.get_calendar('NYSE')
+    schedule = nyse.schedule(start_date=(now - pd.Timedelta(days=10)).date(),
+                             end_date=now.date())
+    closed = schedule[schedule['market_close'] + SESSION_BUFFER <= now]
+    return closed.index[-1].date()
+
+
 def get_price_data(lookback_days=250):
     """
     Download recent daily prices for the strategy tickers.
@@ -53,9 +85,12 @@ def get_price_data(lookback_days=250):
 
     Returns
     -------
-    DataFrame indexed by date with columns SPY, BIL, VIXY, ^VIX.
+    DataFrame indexed by date with columns SPY, BIL, VIXY, ^VIX, ending at
+    the most recent completed session.
     """
-    end = pd.Timestamp.today()
+    # yfinance treats end as exclusive, so ask for data through tomorrow;
+    # otherwise today's close is never included, even after the close.
+    end = pd.Timestamp.today() + pd.Timedelta(days=1)
     start = end - pd.Timedelta(days=lookback_days)
 
     raw = yf.download(
@@ -69,5 +104,9 @@ def get_price_data(lookback_days=250):
     # auto_adjust=True means 'Close' is already split/dividend adjusted,
     # matching the book's data convention.
     df_prices = raw['Close'][TICKERS].dropna()
+
+    # Keep completed sessions only. During market hours yfinance returns a
+    # row for today holding the latest intraday price, which is not a close.
+    df_prices = df_prices.loc[:pd.Timestamp(last_completed_session())]
 
     return df_prices

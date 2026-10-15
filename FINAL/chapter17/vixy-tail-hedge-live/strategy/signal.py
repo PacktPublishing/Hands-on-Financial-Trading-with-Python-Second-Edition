@@ -104,13 +104,16 @@ def get_today_snapshot(df_prices,
 
     weights_today = df_weights.loc[latest_date]
 
+    # Adding 0.0 turns a negative zero (0.2 - 0.2 when the VIXY cap binds)
+    # into a plain 0.0, so the message reads 0% rather than -0%.
+
     return {
         'date': latest_date,
         'signal_on': signal_on,
         'vix_level': round(float(vix_level), 2),
         'vix_sma_90': round(float(vix_sma), 2),
         'spy_realized_vol': round(float(spy_realized_vol), 2),
-        'spy_weight': round(float(weights_today['SPY']), 4),
-        'bil_weight': round(float(weights_today['BIL']), 4),
-        'vixy_weight': round(float(weights_today['VIXY']), 4),
+        'spy_weight': round(float(weights_today['SPY']), 4) + 0.0,
+        'bil_weight': round(float(weights_today['BIL']), 4) + 0.0,
+        'vixy_weight': round(float(weights_today['VIXY']), 4) + 0.0,
     }
