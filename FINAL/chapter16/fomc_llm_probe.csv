@@ -1,0 +1,11 @@
+date,llm_score,reason,model
+1997-03-25,4,"Tightening policy due to inflation risk, prudent step.",deepseek-chat|hawkdove-v1
+1998-09-29,-2,Eased slightly due to foreign weakness and financial conditions.,deepseek-chat|hawkdove-v1
+2005-12-13,4,Rate hike and further firming signal hawkish stance.,deepseek-chat|hawkdove-v1
+2008-10-29,-5,"Emergency 50bp cut, severe slowdown, downside risks, easing bias.",deepseek-chat|hawkdove-v1
+2011-08-09,-4,"Downgraded growth, increased downside risks, extended low rates through mid-2013",deepseek-chat|hawkdove-v1
+2015-12-16,1,"Rate hike but gradual, balanced risks, inflation below target.",deepseek-chat|hawkdove-v1
+2020-03-23,-5,"Emergency support, full range of tools, addressing strains, heavy concern.",deepseek-chat|hawkdove-v1
+2021-12-15,1,Tapering asset purchases but rates unchanged; slightly hawkish.,deepseek-chat|hawkdove-v1
+2023-09-20,0,"Holds rates, notes solid growth, inflation elevated, but no explicit bias.",deepseek-chat|hawkdove-v1
+2026-07-29,1,"Holds rates, notes solid growth, inflation elevated, but no explicit tightening.",deepseek-chat|hawkdove-v1
